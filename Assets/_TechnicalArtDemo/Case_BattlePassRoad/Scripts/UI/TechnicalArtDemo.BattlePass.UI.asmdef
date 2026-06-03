@@ -1,0 +1,16 @@
+{
+  "name": "TechnicalArtDemo.BattlePass.UI",
+  "rootNamespace": "",
+  "references": [
+    "TechnicalArtDemo.BattlePass.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

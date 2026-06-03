@@ -1,0 +1,19 @@
+{
+  "name": "TechnicalArtDemo.BattlePass.Editor",
+  "rootNamespace": "",
+  "references": [
+    "TechnicalArtDemo.BattlePass.Runtime",
+    "TechnicalArtDemo.BattlePass.UI"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
