@@ -2,39 +2,102 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace TechnicalArtDemo.BattlePass.UI.Cards
 {
     [ExecuteAlways]
+    [DisallowMultipleComponent]
     [RequireComponent(typeof(LayoutElement))]
     public sealed class ShadowedTextLayoutBinder : MonoBehaviour
     {
         [SerializeField] private TMP_Text mainText;
         [SerializeField] private TMP_Text shadowText;
         [SerializeField] private Vector2 shadowOffset = new(0f, -4f);
-        [SerializeField] private float extraWidthPadding = 0f;
-        [SerializeField] private float extraHeightPadding = 0f;
-        [SerializeField] private bool syncShadowText = true;
+        [SerializeField] private Vector2 padding;
 
         private LayoutElement layoutElement;
+
         private string lastText;
-        private float lastWidth;
-        private float lastHeight;
+        private Vector2 lastSize;
+        private Vector2 lastShadowOffset;
+        private Vector2 lastPadding;
+
+#if UNITY_EDITOR
+        private bool refreshQueued;
+        private bool forceQueuedRefresh;
+#endif
 
         private void OnEnable()
         {
-            Cache();
-            Apply(true);
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                QueueEditorRefresh(true);
+                return;
+            }
+#endif
+
+            Refresh(true);
         }
 
+#if UNITY_EDITOR
         private void OnValidate()
         {
-            Cache();
-            Apply(true);
+            QueueEditorRefresh(true);
         }
 
-        private void LateUpdate()
+        private void Update()
         {
-            Apply(false);
+            if (Application.isPlaying)
+            {
+                return;
+            }
+
+            Refresh(false);
+        }
+
+        private void QueueEditorRefresh(bool force)
+        {
+            forceQueuedRefresh |= force;
+
+            if (refreshQueued)
+            {
+                return;
+            }
+
+            refreshQueued = true;
+
+            EditorApplication.delayCall += () =>
+            {
+                if (this == null)
+                {
+                    return;
+                }
+
+                bool shouldForce = forceQueuedRefresh;
+                refreshQueued = false;
+                forceQueuedRefresh = false;
+
+                Refresh(shouldForce);
+            };
+        }
+#endif
+
+        [ContextMenu("Refresh Layout")]
+        public void RefreshLayout()
+        {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                QueueEditorRefresh(true);
+                return;
+            }
+#endif
+
+            Refresh(true);
         }
 
         public void SetText(string value)
@@ -45,52 +108,55 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
             }
 
             mainText.text = value;
-            Apply(true);
-        }
 
-        private void Cache()
-        {
-            if (layoutElement == null)
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
             {
-                layoutElement = GetComponent<LayoutElement>();
+                QueueEditorRefresh(true);
+                return;
             }
+#endif
+
+            Refresh(true);
         }
 
-        private void Apply(bool force)
+        private void Refresh(bool force)
         {
             if (mainText == null || shadowText == null)
             {
                 return;
             }
 
-            Cache();
+            layoutElement ??= GetComponent<LayoutElement>();
 
-            if (syncShadowText && shadowText.text != mainText.text)
+            if (shadowText.text != mainText.text)
             {
                 shadowText.text = mainText.text;
+                force = true;
             }
 
-            // Using GetPreferredValues for measurements
-            Vector2 preferredSize = mainText.GetPreferredValues(mainText.text);
+            Vector2 preferred = mainText.GetPreferredValues(mainText.text);
+            float width = Mathf.Ceil(preferred.x + padding.x);
+            float height = Mathf.Ceil(preferred.y + Mathf.Abs(shadowOffset.y) + padding.y);
+            Vector2 size = new(width, height);
 
-            float width = Mathf.Ceil(preferredSize.x + extraWidthPadding);
-            float height = Mathf.Ceil(
-                Mathf.Max(preferredSize.y, shadowText.GetPreferredValues(shadowText.text).y)
-                + Mathf.Abs(shadowOffset.y)
-                + extraHeightPadding
-            );
+            bool renderOrderChanged =
+                shadowText.transform.GetSiblingIndex() > mainText.transform.GetSiblingIndex();
 
             if (!force &&
                 mainText.text == lastText &&
-                Mathf.Approximately(width, lastWidth) &&
-                Mathf.Approximately(height, lastHeight))
+                size == lastSize &&
+                shadowOffset == lastShadowOffset &&
+                padding == lastPadding &&
+                !renderOrderChanged)
             {
                 return;
             }
 
             lastText = mainText.text;
-            lastWidth = width;
-            lastHeight = height;
+            lastSize = size;
+            lastShadowOffset = shadowOffset;
+            lastPadding = padding;
 
             layoutElement.minWidth = width;
             layoutElement.preferredWidth = width;
@@ -99,27 +165,27 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
             layoutElement.flexibleWidth = 0f;
             layoutElement.flexibleHeight = 0f;
 
-            ConfigureTextRect(mainText.rectTransform, width, height, Vector2.zero);
-            ConfigureTextRect(shadowText.rectTransform, width, height, shadowOffset);
+            ConfigureText(mainText.rectTransform, size, Vector2.zero);
+            ConfigureText(shadowText.rectTransform, size, shadowOffset);
 
-            // Enforce explicit render order
             shadowText.transform.SetAsFirstSibling();
             mainText.transform.SetAsLastSibling();
 
             LayoutRebuilder.MarkLayoutForRebuild((RectTransform)transform);
+
             if (transform.parent is RectTransform parentRect)
             {
                 LayoutRebuilder.MarkLayoutForRebuild(parentRect);
             }
         }
 
-        private static void ConfigureTextRect(RectTransform rect, float width, float height, Vector2 anchoredPosition)
+        private static void ConfigureText(RectTransform rect, Vector2 size, Vector2 position)
         {
             rect.anchorMin = new Vector2(0.5f, 0.5f);
             rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(width, height);
-            rect.anchoredPosition = anchoredPosition;
+            rect.sizeDelta = size;
+            rect.anchoredPosition = position;
             rect.localScale = Vector3.one;
         }
     }
