@@ -2,7 +2,8 @@
   "name": "TechnicalArtDemo.BattlePass.UI",
   "rootNamespace": "",
   "references": [
-    "TechnicalArtDemo.BattlePass.Runtime"
+    "TechnicalArtDemo.BattlePass.Runtime",
+    "Unity.TextMeshPro"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
