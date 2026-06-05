@@ -24,12 +24,17 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
         [Header("Badges")]
         [SerializeField] private GameObject lockBadge;
         [SerializeField] private GameObject alertBadge;
+        [SerializeField] private GameObject claimedCheckBadge;
 
         [Header("States")]
         [SerializeField] private GameObject lockedOverlay;
         [SerializeField] private GameObject claimedOverlay;
         [SerializeField] private GameObject claimableGlow;
         [SerializeField] private GameObject selectedOutline;
+
+        [Header("State Styles")]
+        [SerializeField] private RewardCardStyle claimableStyle;
+        [SerializeField] private RewardCardStyle claimedStyle;
 
         public void Bind(RewardCardData data, RewardCardState state, bool isSelected)
         {
@@ -38,17 +43,21 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
                 return;
             }
 
-            BindContent(data);
+            BindContent(data, state);
             BindFooter(data);
             BindState(state);
             BindSelection(isSelected);
         }
 
-        private void BindContent(RewardCardData data)
+        private void BindContent(RewardCardData data, RewardCardState state)
         {
-            if (data.Style != null && cardBackgroundImage != null)
+            if (cardBackgroundImage != null)
             {
-                cardBackgroundImage.sprite = data.Style.CardBackgroundSprite;
+                RewardCardStyle resolvedStyle = ResolveBackgroundStyle(data, state);
+                if (resolvedStyle != null)
+                {
+                    cardBackgroundImage.sprite = resolvedStyle.CardBackgroundSprite;
+                }
             }
 
             if (rewardIconImage != null)
@@ -59,6 +68,23 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
             if (titleText != null)
             {
                 titleText.SetText(data.DisplayTitle);
+            }
+        }
+
+        private RewardCardStyle ResolveBackgroundStyle(RewardCardData data, RewardCardState state)
+        {
+            switch (state)
+            {
+                case RewardCardState.Unlocked:
+                case RewardCardState.Claimable:
+                    return claimableStyle != null ? claimableStyle : data.Style;
+
+                case RewardCardState.Claimed:
+                    return claimedStyle != null ? claimedStyle : data.Style;
+
+                case RewardCardState.Locked:
+                default:
+                    return data.Style;
             }
         }
 
@@ -99,8 +125,10 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
         {
             SetActive(lockBadge, state == RewardCardState.Locked);
             SetActive(alertBadge, state == RewardCardState.Claimable);
+            SetActive(claimedCheckBadge, state == RewardCardState.Claimed);
+
             SetActive(lockedOverlay, state == RewardCardState.Locked);
-            SetActive(claimedOverlay, state == RewardCardState.Claimed);
+            SetActive(claimedOverlay, false);
             SetActive(claimableGlow, state == RewardCardState.Claimable);
         }
 

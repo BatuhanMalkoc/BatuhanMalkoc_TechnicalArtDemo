@@ -13,4 +13,10 @@ MonoBehaviour:
   m_Name: BattlePassRoad_Demo
   m_EditorClassIdentifier: TechnicalArtDemo.BattlePass.Runtime::TechnicalArtDemo.BattlePass.Runtime.BattlePassRoadData
   roadName: 
-  tiers: []
+  tiers:
+  - tier: 0
+    freeReward: {fileID: 11400000, guid: 00ec1d16431ecb8468fae6d1d55a3a2e, type: 2}
+    premiumReward: {fileID: 11400000, guid: 9b656da3585b4654598a5d2a68da96bf, type: 2}
+  - tier: 0
+    freeReward: {fileID: 0}
+    premiumReward: {fileID: 0}

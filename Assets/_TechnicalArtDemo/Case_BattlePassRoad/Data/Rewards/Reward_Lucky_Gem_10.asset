@@ -17,7 +17,7 @@ MonoBehaviour:
   titleOverride: 
   rewardIconOverride: {fileID: 0}
   valueIconOverride: {fileID: 0}
-  useItemDefaultFooterMode: 1
-  footerMode: 1
-  actionLabelText: 
+  useItemDefaultFooterMode: 0
+  footerMode: 0
+  actionLabelText: UNLOCK NOW
   valueText: 10
