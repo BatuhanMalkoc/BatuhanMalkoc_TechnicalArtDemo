@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Style_Common
   m_EditorClassIdentifier: TechnicalArtDemo.BattlePass.Runtime::TechnicalArtDemo.BattlePass.Runtime.RewardCardStyle
   styleName: Common
-  cardBackgroundSprite: {fileID: 0}
+  cardBackgroundSprite: {fileID: 21300000, guid: 4a330d0879e25c840a71fb40b323c98c, type: 3}

@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c728d5b1a72e994a96da65b824b6bdd, type: 3}
-  m_Name: Reward_Gold_5000
+  m_Name: Reward_Free_T38_Lucky_Gem_08
   m_EditorClassIdentifier: TechnicalArtDemo.BattlePass.Runtime::TechnicalArtDemo.BattlePass.Runtime.RewardCardData
-  item: {fileID: 11400000, guid: abf4e605a9818e0479b96889aa405ac8, type: 2}
-  style: {fileID: 11400000, guid: 44a94624115eac344801ca337b6b9285, type: 2}
+  item: {fileID: 11400000, guid: 4d57ef6889259a248b0b2561500c92f4, type: 2}
+  style: {fileID: 11400000, guid: f2e6fc42a459ab148a5ca5da2f6e8116, type: 2}
   titleOverride: 
   rewardIconOverride: {fileID: 0}
   valueIconOverride: {fileID: 0}
   useItemDefaultFooterMode: 1
   footerMode: 1
   actionLabelText: 
-  valueText: 5000
+  valueText: 8

@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c728d5b1a72e994a96da65b824b6bdd, type: 3}
-  m_Name: Reward_Lucky_Gem_10
+  m_Name: Reward_Premium_T02_Diamond_10
   m_EditorClassIdentifier: TechnicalArtDemo.BattlePass.Runtime::TechnicalArtDemo.BattlePass.Runtime.RewardCardData
-  item: {fileID: 11400000, guid: 4d57ef6889259a248b0b2561500c92f4, type: 2}
-  style: {fileID: 11400000, guid: 6665d4d9a3ed7c84693a86ce6e2dc65c, type: 2}
+  item: {fileID: 11400000, guid: b626eb782f3baae4da7bdcf8822823e3, type: 2}
+  style: {fileID: 11400000, guid: 5b430609fc730cf40badbac2ac77d736, type: 2}
   titleOverride: 
   rewardIconOverride: {fileID: 0}
   valueIconOverride: {fileID: 0}
-  useItemDefaultFooterMode: 0
-  footerMode: 0
-  actionLabelText: UNLOCK NOW
+  useItemDefaultFooterMode: 1
+  footerMode: 1
+  actionLabelText: 
   valueText: 10

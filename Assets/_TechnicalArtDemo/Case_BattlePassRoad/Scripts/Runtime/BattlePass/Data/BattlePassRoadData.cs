@@ -8,8 +8,12 @@ namespace TechnicalArtDemo.BattlePass.Runtime
     {
         [SerializeField] private string roadName;
         [SerializeField] private List<BattlePassTierData> tiers;
+        [SerializeField] private List<RewardCardData> premiumIntroRewards;
+        [SerializeField] private RewardCardData premiumRepeatReward;
 
         public string RoadName => roadName;
         public IReadOnlyList<BattlePassTierData> Tiers => tiers;
+        public IReadOnlyList<RewardCardData> PremiumIntroRewards => premiumIntroRewards;
+        public RewardCardData PremiumRepeatReward => premiumRepeatReward;
     }
 }

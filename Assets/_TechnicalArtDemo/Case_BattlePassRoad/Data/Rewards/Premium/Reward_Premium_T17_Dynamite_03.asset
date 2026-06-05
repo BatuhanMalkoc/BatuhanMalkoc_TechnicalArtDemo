@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c728d5b1a72e994a96da65b824b6bdd, type: 3}
-  m_Name: Reward_Diamond_2
+  m_Name: Reward_Premium_T17_Dynamite_03
   m_EditorClassIdentifier: TechnicalArtDemo.BattlePass.Runtime::TechnicalArtDemo.BattlePass.Runtime.RewardCardData
-  item: {fileID: 11400000, guid: b626eb782f3baae4da7bdcf8822823e3, type: 2}
+  item: {fileID: 11400000, guid: 8f00559bb0a74f98b8be87bae3e3bb3a, type: 2}
   style: {fileID: 11400000, guid: 5b430609fc730cf40badbac2ac77d736, type: 2}
   titleOverride: 
   rewardIconOverride: {fileID: 0}
@@ -20,4 +20,4 @@ MonoBehaviour:
   useItemDefaultFooterMode: 1
   footerMode: 1
   actionLabelText: 
-  valueText: 2
+  valueText: 3
