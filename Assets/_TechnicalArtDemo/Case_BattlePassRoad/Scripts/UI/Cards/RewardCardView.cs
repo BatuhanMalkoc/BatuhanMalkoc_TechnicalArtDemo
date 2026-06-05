@@ -27,7 +27,6 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
         [SerializeField] private GameObject claimedCheckBadge;
 
         [Header("States")]
-        [SerializeField] private GameObject lockedOverlay;
         [SerializeField] private GameObject claimedOverlay;
         [SerializeField] private GameObject claimableGlow;
         [SerializeField] private GameObject selectedOutline;
@@ -36,14 +35,14 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
         [SerializeField] private RewardCardStyle claimableStyle;
         [SerializeField] private RewardCardStyle claimedStyle;
 
-        public void Bind(RewardCardData data, RewardCardState state, bool isSelected)
+        public void Bind(RewardCardData data, RewardCardProgressState progressState, bool isSelected)
         {
-            Bind(data, state, RewardCardAccessState.Available, isSelected);
+            Bind(data, progressState, RewardCardAccessState.Available, isSelected);
         }
 
         public void Bind(
             RewardCardData data,
-            RewardCardState state,
+            RewardCardProgressState progressState,
             RewardCardAccessState accessState,
             bool isSelected)
         {
@@ -52,17 +51,17 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
                 return;
             }
 
-            BindContent(data, state);
+            BindContent(data, progressState);
             BindFooter(data);
-            BindState(state, accessState);
+            BindState(progressState, accessState);
             BindSelection(isSelected);
         }
 
-        private void BindContent(RewardCardData data, RewardCardState state)
+        private void BindContent(RewardCardData data, RewardCardProgressState progressState)
         {
             if (cardBackgroundImage != null)
             {
-                RewardCardStyle resolvedStyle = ResolveBackgroundStyle(data, state);
+                RewardCardStyle resolvedStyle = ResolveBackgroundStyle(data, progressState);
                 if (resolvedStyle != null)
                 {
                     cardBackgroundImage.sprite = resolvedStyle.CardBackgroundSprite;
@@ -80,18 +79,17 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
             }
         }
 
-        private RewardCardStyle ResolveBackgroundStyle(RewardCardData data, RewardCardState state)
+        private RewardCardStyle ResolveBackgroundStyle(RewardCardData data, RewardCardProgressState progressState)
         {
-            switch (state)
+            switch (progressState)
             {
-                case RewardCardState.Unlocked:
-                case RewardCardState.Claimable:
+                case RewardCardProgressState.Reached:
                     return claimableStyle != null ? claimableStyle : data.Style;
 
-                case RewardCardState.Claimed:
+                case RewardCardProgressState.Claimed:
                     return claimedStyle != null ? claimedStyle : data.Style;
 
-                case RewardCardState.Locked:
+                case RewardCardProgressState.NotReached:
                 default:
                     return data.Style;
             }
@@ -136,18 +134,16 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
             }
         }
 
-        private void BindState(RewardCardState state, RewardCardAccessState accessState)
+        private void BindState(RewardCardProgressState progressState, RewardCardAccessState accessState)
         {
-            bool isClaimed = state == RewardCardState.Claimed;
-            bool isTierLocked = state == RewardCardState.Locked;
+            bool isClaimed = progressState == RewardCardProgressState.Claimed;
             bool isPremiumLocked = accessState == RewardCardAccessState.PremiumLocked;
-            bool canClaimNow = state == RewardCardState.Claimable && !isPremiumLocked;
+            bool canClaimNow = progressState == RewardCardProgressState.Reached && !isPremiumLocked;
 
-            SetActive(lockBadge, !isClaimed && (isTierLocked || isPremiumLocked));
+            SetActive(lockBadge, !isClaimed && isPremiumLocked);
             SetActive(alertBadge, canClaimNow);
             SetActive(claimedCheckBadge, isClaimed);
 
-            SetActive(lockedOverlay, isTierLocked);
             SetActive(claimedOverlay, false);
             SetActive(claimableGlow, canClaimNow);
         }
@@ -168,14 +164,14 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
 #if UNITY_EDITOR
         [Header("Editor Preview")]
         [SerializeField] private RewardCardData previewData;
-        [SerializeField] private RewardCardState previewState;
+        [SerializeField] private RewardCardProgressState previewProgressState;
         [SerializeField] private RewardCardAccessState previewAccessState;
         [SerializeField] private bool previewSelected;
 
         [ContextMenu("Preview Bind")]
         private void PreviewBind()
         {
-            Bind(previewData, previewState, previewAccessState, previewSelected);
+            Bind(previewData, previewProgressState, previewAccessState, previewSelected);
         }
 #endif
     }
