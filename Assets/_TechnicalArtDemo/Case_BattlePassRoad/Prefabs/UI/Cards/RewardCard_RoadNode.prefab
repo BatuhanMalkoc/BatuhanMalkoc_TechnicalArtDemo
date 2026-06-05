@@ -547,6 +547,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5869082391515329344}
+  - component: {fileID: 6405612538027034838}
   m_Layer: 5
   m_Name: RewardCard_RoadNode
   m_TagString: Untagged
@@ -575,6 +576,35 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 360, y: 430}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6405612538027034838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 623700067865599465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83da232293910be4182289c05808c80a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TechnicalArtDemo.BattlePass.UI::TechnicalArtDemo.BattlePass.UI.Cards.RewardCardView
+  cardBackgroundImage: {fileID: 3951509612525112464}
+  rewardIconImage: {fileID: 3870402055384060824}
+  titleText: {fileID: 3236300748671069424}
+  actionLabelGroup: {fileID: 5395808442026062943}
+  actionLabelText: {fileID: 8964146589012201763}
+  iconValueGroup: {fileID: 5126936010424634176}
+  valueIconImage: {fileID: 1628425392329576180}
+  valueTextBinder: {fileID: 450000000000000003}
+  lockBadge: {fileID: 855250731553758856}
+  alertBadge: {fileID: 6605573595669355806}
+  lockedOverlay: {fileID: 1140512131674436724}
+  claimedOverlay: {fileID: 8775814411906840111}
+  claimableGlow: {fileID: 4045794339015807265}
+  selectedOutline: {fileID: 7858546240840611186}
+  previewData: {fileID: 11400000, guid: 9b656da3585b4654598a5d2a68da96bf, type: 2}
+  previewState: 0
+  previewSelected: 0
 --- !u!1 &855250731553758856
 GameObject:
   m_ObjectHideFlags: 0
