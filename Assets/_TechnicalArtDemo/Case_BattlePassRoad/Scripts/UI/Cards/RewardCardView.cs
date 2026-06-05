@@ -38,6 +38,15 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
 
         public void Bind(RewardCardData data, RewardCardState state, bool isSelected)
         {
+            Bind(data, state, RewardCardAccessState.Available, isSelected);
+        }
+
+        public void Bind(
+            RewardCardData data,
+            RewardCardState state,
+            RewardCardAccessState accessState,
+            bool isSelected)
+        {
             if (data == null)
             {
                 return;
@@ -45,7 +54,7 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
 
             BindContent(data, state);
             BindFooter(data);
-            BindState(state);
+            BindState(state, accessState);
             BindSelection(isSelected);
         }
 
@@ -127,15 +136,20 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
             }
         }
 
-        private void BindState(RewardCardState state)
+        private void BindState(RewardCardState state, RewardCardAccessState accessState)
         {
-            SetActive(lockBadge, state == RewardCardState.Locked);
-            SetActive(alertBadge, state == RewardCardState.Claimable);
-            SetActive(claimedCheckBadge, state == RewardCardState.Claimed);
+            bool isClaimed = state == RewardCardState.Claimed;
+            bool isTierLocked = state == RewardCardState.Locked;
+            bool isPremiumLocked = accessState == RewardCardAccessState.PremiumLocked;
+            bool canClaimNow = state == RewardCardState.Claimable && !isPremiumLocked;
 
-            SetActive(lockedOverlay, state == RewardCardState.Locked);
+            SetActive(lockBadge, !isClaimed && (isTierLocked || isPremiumLocked));
+            SetActive(alertBadge, canClaimNow);
+            SetActive(claimedCheckBadge, isClaimed);
+
+            SetActive(lockedOverlay, isTierLocked);
             SetActive(claimedOverlay, false);
-            SetActive(claimableGlow, state == RewardCardState.Claimable);
+            SetActive(claimableGlow, canClaimNow);
         }
 
         private void BindSelection(bool isSelected)
@@ -155,12 +169,13 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
         [Header("Editor Preview")]
         [SerializeField] private RewardCardData previewData;
         [SerializeField] private RewardCardState previewState;
+        [SerializeField] private RewardCardAccessState previewAccessState;
         [SerializeField] private bool previewSelected;
 
         [ContextMenu("Preview Bind")]
         private void PreviewBind()
         {
-            Bind(previewData, previewState, previewSelected);
+            Bind(previewData, previewState, previewAccessState, previewSelected);
         }
 #endif
     }
