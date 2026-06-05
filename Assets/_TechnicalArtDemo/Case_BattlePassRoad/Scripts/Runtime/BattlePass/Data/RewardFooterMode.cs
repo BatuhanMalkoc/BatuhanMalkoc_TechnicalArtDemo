@@ -3,6 +3,7 @@ namespace TechnicalArtDemo.BattlePass.Runtime
     public enum RewardFooterMode
     {
         ActionLabel = 0,
-        IconValue = 1
+        IconValue = 1,
+        None = 2
     }
 }

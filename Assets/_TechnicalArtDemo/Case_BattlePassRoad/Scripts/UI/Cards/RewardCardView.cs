@@ -118,6 +118,12 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
                     }
 
                     break;
+
+                case RewardFooterMode.None:
+                default:
+                    SetActive(actionLabelGroup, false);
+                    SetActive(iconValueGroup, false);
+                    break;
             }
         }
 
