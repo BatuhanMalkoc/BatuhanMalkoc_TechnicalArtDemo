@@ -562,7 +562,7 @@ MonoBehaviour:
       m_Height: 70.109375
       m_HorizontalBearingX: 1.5
       m_HorizontalBearingY: 69.90625
-      m_HorizontalAdvance: 59.5
+      m_HorizontalAdvance: 63.4
     m_GlyphRect:
       m_X: 653
       m_Y: 11
@@ -787,7 +787,7 @@ MonoBehaviour:
       m_Height: 70.203125
       m_HorizontalBearingX: 4.59375
       m_HorizontalBearingY: 70
-      m_HorizontalAdvance: 50.7
+      m_HorizontalAdvance: 56.79
     m_GlyphRect:
       m_X: 892
       m_Y: 197

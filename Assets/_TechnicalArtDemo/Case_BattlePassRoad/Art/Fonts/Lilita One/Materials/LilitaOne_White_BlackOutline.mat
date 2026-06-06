@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: LilitaOne_White_BlackOutline
   m_Shader: {fileID: 4800000, guid: 68e6db2ebdc24f95958faec2be5558d6, type: 3}
-  m_Parent: {fileID: 7262518719693155397, guid: 36cf44406c5f92643818c4ef5df813ef, type: 2}
+  m_Parent: {fileID: 2100000, guid: 5ef57f2e5438d774f992de69bd01ecfe, type: 2}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -25,9 +25,12 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _OutlineWidth: 0.4
-    - _ScaleRatioB: 0.7386364
-    - _ScaleRatioC: 0.34531856
+    - _FaceDilate: 0.25
+    - _OutlineSoftness: 0.1
+    - _OutlineWidth: 0.5
+    - _ScaleRatioA: 0.8762322
+    - _ScaleRatioB: 0.5113636
+    - _ScaleRatioC: 0.23906669
     - _UnderlayDilate: 0.976
     - _UnderlayOffsetY: -1
     - _UnderlaySoftness: 0.163
