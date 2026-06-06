@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Item_Wings_Of_Horus
   m_EditorClassIdentifier: TechnicalArtDemo.BattlePass.Runtime::TechnicalArtDemo.BattlePass.Runtime.RewardItemData
   displayName: WINGS OF HORUS
-  rewardIcon: {fileID: 0}
+  rewardIcon: {fileID: 21300000, guid: 4442e4098011c1a4ba9a09f8e8d1cf82, type: 3}
   valueIcon: {fileID: 0}
   defaultFooterMode: 0
