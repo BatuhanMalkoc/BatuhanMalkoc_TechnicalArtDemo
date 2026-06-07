@@ -1,3 +1,4 @@
+using System;
 using TechnicalArtDemo.BattlePass.Runtime;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +8,15 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
     [DisallowMultipleComponent]
     public sealed class RewardCardView : MonoBehaviour
     {
+        [Header("Battle Pass")]
+        [SerializeField] private RewardCardData rewardData;
+        [SerializeField, Min(0)] private int tierIndex;
+        [SerializeField] private bool premiumReward;
+        [SerializeField] private bool claimed;
+
+        [Header("Interaction")]
+        [SerializeField] private Button hitButton;
+
         [Header("Content")]
         [SerializeField] private Image cardBackgroundImage;
         [SerializeField] private Image rewardIconImage;
@@ -35,6 +45,83 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
         [SerializeField] private RewardCardStyle claimableStyle;
         [SerializeField] private RewardCardStyle claimedStyle;
 
+        public event Action<RewardCardView> Clicked;
+
+        public int TierIndex => tierIndex;
+        public bool IsPremiumReward => premiumReward;
+        public bool IsClaimed => claimed;
+        public RewardCardData RewardData => rewardData;
+
+        private void Awake()
+        {
+            CacheInteraction();
+        }
+
+        private void OnEnable()
+        {
+            CacheInteraction();
+
+            if (hitButton != null)
+            {
+                hitButton.onClick.AddListener(HandleClick);
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (hitButton != null)
+            {
+                hitButton.onClick.RemoveListener(HandleClick);
+            }
+        }
+
+        public void BindForBattlePass(int currentLevel, bool premiumOwned)
+        {
+            if (rewardData == null)
+            {
+                RefreshInteractable(false);
+                return;
+            }
+
+            RewardCardProgressState progressState = ResolveProgressState(currentLevel);
+            RewardCardAccessState accessState = ResolveAccessState(premiumOwned);
+
+            Bind(rewardData, progressState, accessState, isSelected: false);
+            RefreshInteractable(CanClaim(currentLevel, premiumOwned));
+        }
+
+        public bool CanClaim(int currentLevel, bool premiumOwned)
+        {
+            return
+                rewardData != null &&
+                !claimed &&
+                tierIndex <= currentLevel &&
+                (!premiumReward || premiumOwned);
+        }
+
+        public bool TryClaim(int currentLevel, bool premiumOwned)
+        {
+            if (!CanClaim(currentLevel, premiumOwned))
+            {
+                return false;
+            }
+
+            claimed = true;
+            BindForBattlePass(currentLevel, premiumOwned);
+            return true;
+        }
+
+        public void SetClaimed(bool value, int currentLevel, bool premiumOwned)
+        {
+            if (claimed == value)
+            {
+                return;
+            }
+
+            claimed = value;
+            BindForBattlePass(currentLevel, premiumOwned);
+        }
+
         public void Bind(RewardCardData data, RewardCardProgressState progressState, bool isSelected)
         {
             Bind(data, progressState, RewardCardAccessState.Available, isSelected);
@@ -57,11 +144,31 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
             BindSelection(isSelected);
         }
 
+        private RewardCardProgressState ResolveProgressState(int currentLevel)
+        {
+            if (claimed)
+            {
+                return RewardCardProgressState.Claimed;
+            }
+
+            return tierIndex <= currentLevel
+                ? RewardCardProgressState.Reached
+                : RewardCardProgressState.NotReached;
+        }
+
+        private RewardCardAccessState ResolveAccessState(bool premiumOwned)
+        {
+            return premiumReward && !premiumOwned
+                ? RewardCardAccessState.PremiumLocked
+                : RewardCardAccessState.Available;
+        }
+
         private void BindContent(RewardCardData data, RewardCardProgressState progressState)
         {
             if (cardBackgroundImage != null)
             {
                 RewardCardStyle resolvedStyle = ResolveBackgroundStyle(data, progressState);
+
                 if (resolvedStyle != null)
                 {
                     cardBackgroundImage.sprite = resolvedStyle.CardBackgroundSprite;
@@ -79,7 +186,9 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
             }
         }
 
-        private RewardCardStyle ResolveBackgroundStyle(RewardCardData data, RewardCardProgressState progressState)
+        private RewardCardStyle ResolveBackgroundStyle(
+            RewardCardData data,
+            RewardCardProgressState progressState)
         {
             switch (progressState)
             {
@@ -134,23 +243,50 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
             }
         }
 
-        private void BindState(RewardCardProgressState progressState, RewardCardAccessState accessState)
+        private void BindState(
+            RewardCardProgressState progressState,
+            RewardCardAccessState accessState)
         {
+            bool isReached = progressState == RewardCardProgressState.Reached;
             bool isClaimed = progressState == RewardCardProgressState.Claimed;
             bool isPremiumLocked = accessState == RewardCardAccessState.PremiumLocked;
-            bool canClaimNow = progressState == RewardCardProgressState.Reached && !isPremiumLocked;
 
-            SetActive(lockBadge, !isClaimed && isPremiumLocked);
-            SetActive(alertBadge, canClaimNow);
+            bool showPremiumLock = !isClaimed && isPremiumLocked;
+            bool showReadyAlert = !isClaimed && isReached;
+            bool showClaimableGlow = isReached && !isPremiumLocked;
+
+            SetActive(lockBadge, showPremiumLock);
+            SetActive(alertBadge, showReadyAlert);
             SetActive(claimedCheckBadge, isClaimed);
 
             SetActive(claimedOverlay, false);
-            SetActive(claimableGlow, canClaimNow);
+            SetActive(claimableGlow, showClaimableGlow);
         }
 
         private void BindSelection(bool isSelected)
         {
             SetActive(selectedOutline, isSelected);
+        }
+
+        private void CacheInteraction()
+        {
+            if (hitButton == null)
+            {
+                hitButton = GetComponentInChildren<Button>(true);
+            }
+        }
+
+        private void RefreshInteractable(bool canInteract)
+        {
+            if (hitButton != null)
+            {
+                hitButton.interactable = canInteract;
+            }
+        }
+
+        private void HandleClick()
+        {
+            Clicked?.Invoke(this);
         }
 
         private static void SetActive(GameObject target, bool active)
@@ -163,15 +299,30 @@ namespace TechnicalArtDemo.BattlePass.UI.Cards
 
 #if UNITY_EDITOR
         [Header("Editor Preview")]
-        [SerializeField] private RewardCardData previewData;
         [SerializeField] private RewardCardProgressState previewProgressState;
         [SerializeField] private RewardCardAccessState previewAccessState;
         [SerializeField] private bool previewSelected;
 
+        private void Reset()
+        {
+            CacheInteraction();
+        }
+
+        private void OnValidate()
+        {
+            CacheInteraction();
+        }
+
         [ContextMenu("Preview Bind")]
         private void PreviewBind()
         {
-            Bind(previewData, previewProgressState, previewAccessState, previewSelected);
+            Bind(rewardData, previewProgressState, previewAccessState, previewSelected);
+        }
+
+        [ContextMenu("Preview Battle Pass State")]
+        private void PreviewBattlePassState()
+        {
+            BindForBattlePass(tierIndex, premiumOwned: !premiumReward);
         }
 #endif
     }
